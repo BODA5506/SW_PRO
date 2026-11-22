@@ -1,0 +1,4 @@
+[
+  {"id": 1, "name": "Cairo Motors", "city": "Cairo", "address": "Nasr City, Cairo", "latitude": 30.0561, "longitude": 31.3301, "phone": "0100000001", "car_ids": [1, 2]},
+  {"id": 2, "name": "Giza Auto Center", "city": "Giza", "address": "Dokki, Giza", "latitude": 30.0382, "longitude": 31.2113, "phone": "0100000002", "car_ids": [2, 3]}
+]
