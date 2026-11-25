@@ -1,0 +1,147 @@
+﻿generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  BUYER
+  SELLER
+  ADMIN
+}
+
+enum CarCondition {
+  NEW
+  USED
+}
+
+enum CarStatus {
+  ACTIVE
+  SOLD
+  ARCHIVED
+}
+
+enum CategoryType {
+  SIZE
+  BODY_TYPE
+}
+
+enum RequestStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+model User {
+  id               String            @id @default(uuid())
+  fullName         String
+  email            String            @unique
+  phone            String
+  nationalId       String?
+  role             Role              @default(BUYER)
+  sellerProfile    SellerProfile?
+  cars             Car[]
+  favorites        Favorite[]
+  compareLists     CompareList[]
+  purchaseRequests PurchaseRequest[] @relation("BuyerRequests")
+  createdAt        DateTime          @default(now())
+}
+
+model SellerProfile {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id])
+  companyName String
+  city        String
+  location    String
+  nationalId  String
+}
+
+model Category {
+  id         String       @id @default(uuid())
+  type       CategoryType
+  name       String       @unique
+  sizeCars   Car[]        @relation("SizeCategory")
+  bodyCars   Car[]        @relation("BodyCategory")
+}
+
+model Car {
+  id               String            @id @default(uuid())
+  sellerId         String
+  seller           User              @relation(fields: [sellerId], references: [id])
+  name             String
+  brand            String
+  model            String
+  generation       String
+  year             Int
+  condition        CarCondition
+  color            String
+  price            Float
+  sizeCategoryId   String
+  sizeCategory     Category          @relation("SizeCategory", fields: [sizeCategoryId], references: [id])
+  bodyTypeId       String
+  bodyType         Category          @relation("BodyCategory", fields: [bodyTypeId], references: [id])
+  isChinese        Boolean           @default(false)
+  horsepower       Int
+  torqueNm         Float
+  engineCapacityCc Int
+  mileageKm        Int?
+  issuesHistory    String?
+  performanceScore Int               @default(3)
+  comfortScore     Int               @default(3)
+  safetyScore      Int               @default(3)
+  imageUrls        String[]
+  status           CarStatus         @default(ACTIVE)
+  favorites        Favorite[]
+  compareItems     CompareListItem[]
+  purchaseRequests PurchaseRequest[]
+  createdAt        DateTime          @default(now())
+}
+
+model Favorite {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  carId     String
+  car       Car      @relation(fields: [carId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([userId, carId])
+}
+
+model CompareList {
+  id        String            @id @default(uuid())
+  userId    String
+  user      User              @relation(fields: [userId], references: [id])
+  name      String
+  items     CompareListItem[]
+  createdAt DateTime          @default(now())
+}
+
+model CompareListItem {
+  id            String      @id @default(uuid())
+  compareListId String
+  compareList   CompareList @relation(fields: [compareListId], references: [id])
+  carId         String
+  car           Car         @relation(fields: [carId], references: [id])
+
+  @@unique([compareListId, carId])
+}
+
+model PurchaseRequest {
+  id              String        @id @default(uuid())
+  buyerId         String
+  buyer           User          @relation("BuyerRequests", fields: [buyerId], references: [id])
+  carId           String
+  car             Car           @relation(fields: [carId], references: [id])
+  buyerName       String
+  buyerPhone      String
+  buyerEmail      String
+  buyerNationalId String?
+  message         String?
+  status          RequestStatus @default(PENDING)
+  createdAt       DateTime      @default(now())
+}

@@ -1,0 +1,10 @@
+﻿import { getAllCategories } from "./categories.service.js";
+
+export async function listCategories(req, res) {
+  try {
+    const categories = await getAllCategories();
+    res.json(categories);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
