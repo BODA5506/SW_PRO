@@ -1,0 +1,5 @@
+[
+  {"id": 1, "make": "Toyota", "model": "Corolla", "year": 2024, "price": 25000, "seats": 5, "fuel": "petrol", "transmission": "automatic", "fuel_economy": 7},
+  {"id": 2, "make": "Hyundai", "model": "Tucson", "year": 2024, "price": 32000, "seats": 5, "fuel": "petrol", "transmission": "automatic", "fuel_economy": 6},
+  {"id": 3, "make": "Kia", "model": "Picanto", "year": 2023, "price": 12000, "seats": 4, "fuel": "petrol", "transmission": "manual", "fuel_economy": 9}
+]
